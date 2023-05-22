@@ -19,7 +19,7 @@ from llama_index.readers.schema.base import Document
 
 logger = logging.getLogger(__name__)
 
-class AzADX(BaseReader):
+class AzDataExplorerReader(BaseReader):
     """General reader for any Azure Storage Blob file or directory.
 
     Args:
