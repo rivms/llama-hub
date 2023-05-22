@@ -13,7 +13,7 @@
       "azure"
     ]
   },
-  "AzDataExplorer": {
+  "AzDataExplorerReader": {
     "id": "azadx",
     "author": "rivms",
     "keywords": [
