@@ -13,6 +13,16 @@
       "azure"
     ]
   },
+  "AzDataExplorer": {
+    "id": "azadx",
+    "author": "rivms",
+    "keywords": [
+      "kusto",
+      "kql",
+      "azure data explorer",
+      "azure"
+    ]
+  },
   "GoogleDocsReader": {
     "id": "google_docs",
     "author": "jerryjliu"
