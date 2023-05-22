@@ -55,10 +55,12 @@ class AzDataExplorerReader(BaseReader):
 
         result_table = response.primary_results[0]
 
+        documents = []
         for row in result_table:
             json_output = json.dumps(row.to_dict(), indent=0, default=str)
             lines = json_output.split("\n")
             useful_lines = [
                 line for line in lines if not re.match(r"^[{}\[\],]*$", line)
             ]
-            return [Document("\n".join(useful_lines), extra_info=extra_info)]
+            documents.append(Document("\n".join(useful_lines), extra_info=extra_info))
+        return documents
