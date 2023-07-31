@@ -94,6 +94,11 @@ class AzStorageBlobReader(BaseReader):
                 download_file_path = (
                     f"{temp_dir}/{next(tempfile._get_candidate_names())}{extension}"
                 )
+
+                metadata[download_file_path] = {
+                    "file_name": self.blob
+                }
+
                 logger.info(f"Start download of {self.blob}")
                 start_time = time.time()
                 stream = container_client.download_blob(self.blob)
@@ -112,10 +117,16 @@ class AzStorageBlobReader(BaseReader):
                     if self.num_files_limit is not None and i > self.num_files_limit:
                         logger.info(f"Dowloaded stopped, limit reached: {self.num_files_limit} file(s)")
                         break
+
                     extension = Path(obj.name).suffix
                     download_file_path = (
                         f"{temp_dir}/{next(tempfile._get_candidate_names())}{extension}"
                     )
+
+                    metadata[download_file_path] = {
+                        "file_name": obj.name
+                    }
+
                     logger.info(f"Start download of {obj.name}")
                     start_time = time.time()
                     stream = container_client.download_blob(obj)
