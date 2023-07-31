@@ -26,6 +26,7 @@ DEFAULT_FILE_EXTRACTOR: Dict[str, str] = {
     ".json": "JSONReader",
 }
 
+logger = logging.getLogger(__name__)
 
 class SimpleDirectoryReader(BaseReader):
     """Simple directory reader.
@@ -62,6 +63,7 @@ class SimpleDirectoryReader(BaseReader):
         file_extractor: Optional[Dict[str, Union[str, BaseReader]]] = None,
         num_files_limit: Optional[int] = None,
         file_metadata: Optional[Callable[[str], Dict]] = None,
+        loader_hub_url: Optional[str] = None,
     ) -> None:
         """Initialize with parameters."""
         super().__init__()
@@ -76,6 +78,7 @@ class SimpleDirectoryReader(BaseReader):
         self.input_files = self._add_files(self.input_dir)
         self.file_extractor = file_extractor or DEFAULT_FILE_EXTRACTOR
         self.file_metadata = file_metadata
+        self._loader_hub_url = loader_hub_url
 
     def _add_files(self, input_dir: Path) -> List[Path]:
         """Add files."""
@@ -133,12 +136,26 @@ class SimpleDirectoryReader(BaseReader):
                 reader = self.file_extractor[input_file.suffix]
 
                 if isinstance(reader, str):
-                    try:
-                        from llama_hub.utils import import_loader
 
-                        reader = import_loader(reader)()
-                    except ImportError:
-                        reader = download_loader(reader)()
+                    if self._loader_hub_url is not None:
+                        logger.info(f"Loading {reader} from forked url: {self._loader_hub_url}")
+                        reader = download_loader(reader, loader_hub_url = self._loader_hub_url, refresh_cache = True)()
+                    else:
+                        try:
+                            from llama_hub.utils import import_loader
+
+                            reader = import_loader(reader)()
+                        except ImportError:
+                            logger.info(f"{reader} import failed, loading from hub")
+                            reader = download_loader(reader)()   
+
+
+                    #try:
+                    #    from llama_hub.utils import import_loader
+
+                    #   reader = import_loader(reader)()
+                    #except ImportError:
+                    #    reader = download_loader(reader)()
 
                 extracted_documents = reader.load_data(
                     file=input_file, extra_info=metadata

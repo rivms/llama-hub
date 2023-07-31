@@ -1,11 +1,14 @@
 """Read PDF files."""
 
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional
 
 from llama_index.readers.base import BaseReader
 from llama_index.readers.schema.base import Document
 
+
+logger = logging.getLogger(__name__)
 
 class PDFReader(BaseReader):
     """PDF reader."""
@@ -30,6 +33,7 @@ class PDFReader(BaseReader):
                 page_text = pdf.pages[page].extract_text()
                 page_label = pdf.page_labels[page]
                 metadata = {"page_label": page_label, "file_name": file.name, "page_number": page}
+                logger.info(f"Added metadata for page {page}: {metadata['page_number']}")
 
                 if extra_info is not None:
                     metadata.update(extra_info)
