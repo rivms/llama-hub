@@ -39,6 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
+    version: str = "0.2"
 
     def __init__(
         self,
@@ -100,7 +101,7 @@ class AzStorageBlobReader(BaseReader):
                 blobs_list = container_client.list_blobs(
                     self.name_starts_with, self.include
                 )
-                for i, obj in blobs_list:
+                for i, obj in enumerate(blobs_list):
                     if self.num_files_limit is not None and i > self.num_files_limit:
                         logger.info(f"Dowloaded stopped, limit reached: {self.num_files_limit} file(s)")
                         break
