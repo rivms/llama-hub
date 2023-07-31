@@ -39,7 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
-    version: str = "0.22"
+    version: str = "0.23"
 
     def __init__(
         self,
@@ -159,6 +159,6 @@ class AzStorageBlobReader(BaseReader):
                     logger.info(f"SimpleDirectoryReader import failed, loading from hub")
                     SimpleDirectoryReader = download_loader("SimpleDirectoryReader")
 
-            loader = SimpleDirectoryReader(temp_dir, file_extractor=self.file_extractor, num_files_limit=self.num_files_limit, file_metadata = get_metadata)
+            loader = SimpleDirectoryReader(temp_dir, file_extractor=self.file_extractor, num_files_limit=self.num_files_limit, file_metadata = get_metadata, loader_hub_url = self._loader_hub_url)
 
             return loader.load_data()
