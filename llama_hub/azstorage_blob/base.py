@@ -39,7 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
-    version: str = "0.20"
+    version: str = "0.21"
 
     def __init__(
         self,
@@ -149,7 +149,7 @@ class AzStorageBlobReader(BaseReader):
 
             if self._loader_hub_url is not None:
                 logger.info(f"Loading SimpleDirectoryReader from forked url: {self._loader_hub_url}")
-                SimpleDirectoryReader = download_loader("SimpleDirectoryReader", loader_hub_fork_url = self._loader_hub_url, refresh_cache = True)
+                SimpleDirectoryReader = download_loader("SimpleDirectoryReader", loader_hub_url = self._loader_hub_url, refresh_cache = True)
             else:
                 try:
                     from llama_hub.utils import import_loader
