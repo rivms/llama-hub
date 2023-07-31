@@ -52,6 +52,7 @@ class AzStorageBlobReader(BaseReader):
         num_files_limit: Optional[int] = None,
         account_url: str,
         credential: Optional[Any] = None,
+        loader_hub_url: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         """Initializes Azure Storage Account"""
@@ -67,6 +68,7 @@ class AzStorageBlobReader(BaseReader):
         self.account_url = account_url
         self.credential = credential
         self.num_files_limit = num_files_limit
+        self._loader_hub_url = loader_hub_url
 
     def load_data(self) -> List[Document]:
         """Load file(s) from Azure Storage Blob"""
@@ -148,7 +150,10 @@ class AzStorageBlobReader(BaseReader):
             try:
                 from llama_hub.utils import import_loader
 
-                SimpleDirectoryReader = import_loader("SimpleDirectoryReader")
+                if self._loader_hub_url is None:
+                    SimpleDirectoryReader = import_loader("SimpleDirectoryReader")
+                else:    
+                    SimpleDirectoryReader = download_loader("SimpleDirectoryReader", loader_hub_fork_url = self._loader_hub_fork_url, refresh_cache = True)
             except ImportError:
                 SimpleDirectoryReader = download_loader("SimpleDirectoryReader")
 
