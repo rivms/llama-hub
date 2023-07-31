@@ -85,7 +85,7 @@ class AzStorageBlobReader(BaseReader):
 
             def get_metadata(filename):
                 logger.info(f"Metadata key is: {filename}")
-                return "" # metadata[filename]
+                return {} # metadata[filename]
             
             metadata = {}
 
