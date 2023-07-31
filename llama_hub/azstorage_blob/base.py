@@ -39,7 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
-    version: str = "0.10"
+    version: str = "0.11"
 
     def __init__(
         self,
@@ -93,9 +93,9 @@ class AzStorageBlobReader(BaseReader):
 
             if self.blob:
                 extension = Path(self.blob).suffix
-                download_file_path = (
+                download_file_path = Path(
                     f"{temp_dir}/{next(tempfile._get_candidate_names())}{extension}"
-                )
+                ).resolve()
 
                 logger.info(f"Adding metadata for {download_file_path}")
                 metadata[download_file_path] = {
@@ -117,14 +117,14 @@ class AzStorageBlobReader(BaseReader):
                     self.name_starts_with, self.include
                 )
                 for i, obj in enumerate(blobs_list):
-                    if self.num_files_limit is not None and i > self.num_files_limit:
+                    if self.num_files_limit is not None and i >= self.num_files_limit:
                         logger.info(f"Dowloaded stopped, limit reached: {self.num_files_limit} file(s)")
                         break
 
                     extension = Path(obj.name).suffix
-                    download_file_path = (
+                    download_file_path = Path(
                         f"{temp_dir}/{next(tempfile._get_candidate_names())}{extension}"
-                    )
+                    ).resolve()
 
                     logger.info(f"Adding metadata for {download_file_path}")
                     metadata[download_file_path] = {
