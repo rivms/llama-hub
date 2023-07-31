@@ -39,7 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
-    version: str = "0.19"
+    version: str = "0.20"
 
     def __init__(
         self,
@@ -147,15 +147,17 @@ class AzStorageBlobReader(BaseReader):
             )
             logger.info("Document creation starting")
 
-            try:
-                from llama_hub.utils import import_loader
+            if self._loader_hub_url is not None:
+                logger.info(f"Loading SimpleDirectoryReader from forked url: {self._loader_hub_url}")
+                SimpleDirectoryReader = download_loader("SimpleDirectoryReader", loader_hub_fork_url = self._loader_hub_url, refresh_cache = True)
+            else:
+                try:
+                    from llama_hub.utils import import_loader
 
-                if self._loader_hub_url is None:
                     SimpleDirectoryReader = import_loader("SimpleDirectoryReader")
-                else:    
-                    SimpleDirectoryReader = download_loader("SimpleDirectoryReader", loader_hub_fork_url = self._loader_hub_fork_url, refresh_cache = True)
-            except ImportError:
-                SimpleDirectoryReader = download_loader("SimpleDirectoryReader")
+                except ImportError:
+                    logger.info(f"SimpleDirectoryReader import failed, loading from hub")
+                    SimpleDirectoryReader = download_loader("SimpleDirectoryReader")
 
             loader = SimpleDirectoryReader(temp_dir, file_extractor=self.file_extractor, num_files_limit=self.num_files_limit, file_metadata = get_metadata)
 
