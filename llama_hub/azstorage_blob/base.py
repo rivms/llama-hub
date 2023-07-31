@@ -49,7 +49,6 @@ class AzStorageBlobReader(BaseReader):
         name_starts_with: Optional[str] = None,
         include: Optional[Any] = None,
         file_extractor: Optional[Dict[str, Union[str, BaseReader]]] = None,
-        filename_as_id: bool = False,
         num_files_limit: Optional[int] = None,
         account_url: str,
         credential: Optional[Any] = None,
