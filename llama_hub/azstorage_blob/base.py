@@ -39,7 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
-    version: str = "0.11"
+    version: str = "0.14"
 
     def __init__(
         self,
@@ -93,9 +93,9 @@ class AzStorageBlobReader(BaseReader):
 
             if self.blob:
                 extension = Path(self.blob).suffix
-                download_file_path = Path(
+                download_file_path = str(Path(
                     f"{temp_dir}/{next(tempfile._get_candidate_names())}{extension}"
-                ).resolve()
+                ).resolve())
 
                 logger.info(f"Adding metadata for {download_file_path}")
                 metadata[download_file_path] = {
@@ -122,9 +122,9 @@ class AzStorageBlobReader(BaseReader):
                         break
 
                     extension = Path(obj.name).suffix
-                    download_file_path = Path(
+                    download_file_path = str(Path(
                         f"{temp_dir}/{next(tempfile._get_candidate_names())}{extension}"
-                    ).resolve()
+                    ).resolve())
 
                     logger.info(f"Adding metadata for {download_file_path}")
                     metadata[download_file_path] = {
