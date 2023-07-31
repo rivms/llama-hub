@@ -49,6 +49,7 @@ class AzStorageBlobReader(BaseReader):
         include: Optional[Any] = None,
         file_extractor: Optional[Dict[str, Union[str, BaseReader]]] = None,
         filename_as_id: bool = False,
+        num_files_limit: Optional[int] = None,
         account_url: str,
         credential: Optional[Any] = None,
         **kwargs: Any,
@@ -66,6 +67,7 @@ class AzStorageBlobReader(BaseReader):
         self.account_url = account_url
         self.credential = credential
         self.filename_as_id = filename_as_id
+        self.num_files_limit = num_files_limit
 
     def load_data(self) -> List[Document]:
         """Load file(s) from Azure Storage Blob"""
@@ -98,7 +100,10 @@ class AzStorageBlobReader(BaseReader):
                 blobs_list = container_client.list_blobs(
                     self.name_starts_with, self.include
                 )
-                for obj in blobs_list:
+                for i, obj in blobs_list:
+                    if self.num_files_limit is not None and i > self.num_files_limit:
+                        logger.info(f"Dowloaded stopped, limit reached: {self.num_files_limit} file(s)")
+                        break
                     extension = Path(obj.name).suffix
                     download_file_path = (
                         f"{temp_dir}/{next(tempfile._get_candidate_names())}{extension}"
@@ -128,6 +133,6 @@ class AzStorageBlobReader(BaseReader):
                 SimpleDirectoryReader = import_loader("SimpleDirectoryReader")
             except ImportError:
                 SimpleDirectoryReader = download_loader("SimpleDirectoryReader")
-            loader = SimpleDirectoryReader(temp_dir, file_extractor=self.file_extractor, filename_as_id=self.filename_as_id)
+            loader = SimpleDirectoryReader(temp_dir, file_extractor=self.file_extractor, filename_as_id=self.filename_as_id, num_files_limit=self.num_files_limit,)
 
             return loader.load_data()
