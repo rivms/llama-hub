@@ -39,7 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
-    version: str = "0.17"
+    version: str = "0.18"
 
     def __init__(
         self,
@@ -66,7 +66,6 @@ class AzStorageBlobReader(BaseReader):
 
         self.account_url = account_url
         self.credential = credential
-        self.filename_as_id = filename_as_id
         self.num_files_limit = num_files_limit
 
     def load_data(self) -> List[Document]:
