@@ -39,7 +39,7 @@ class AzStorageBlobReader(BaseReader):
         credential (Union[str, Dict[str, str], AzureNamedKeyCredential, AzureSasCredential, TokenCredential, None] = None):
             The credentials with which to authenticate. This is optional if the account URL already has a SAS token.
     """
-    version: str = "0.15"
+    version: str = "0.16"
 
     def __init__(
         self,
@@ -84,7 +84,6 @@ class AzStorageBlobReader(BaseReader):
         with tempfile.TemporaryDirectory() as temp_dir:
 
             def get_metadata(filename):
-                keys_list = [k for k in metadata]
                 return metadata[filename]
             
             metadata = {}
