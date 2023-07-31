@@ -82,6 +82,13 @@ class AzStorageBlobReader(BaseReader):
         total_download_start_time = time.time()
 
         with tempfile.TemporaryDirectory() as temp_dir:
+
+            def get_metadata(filename):
+                    logger.info(f"Metadata key is: {filename}")
+                    return "" # metadata[filename]
+            
+            metadata = {}
+
             if self.blob:
                 extension = Path(self.blob).suffix
                 download_file_path = (
