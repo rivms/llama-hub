@@ -84,8 +84,8 @@ class AzStorageBlobReader(BaseReader):
         with tempfile.TemporaryDirectory() as temp_dir:
 
             def get_metadata(filename):
-                logger.info(f"get_metadata key is: {filename}")
-                return {} # metadata[filename]
+                logger.info(f"get_metadata key is: {filename} with metadata {metadata[filename]}")
+                return metadata[filename]
             
             metadata = {}
 
